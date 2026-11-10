@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>squadmode – Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#3a5aff; --blue-d:#2c47d6; --orange:#fe6b34; --yellow:#fec83b; --green:#2cc289;
+  --grey:#cbcad3; --paper:#f9faf7; --ink:#15161a; --muted:#5d5f6b; --line:#15161a;
+  --r:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Figtree,system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+body.locked{overflow:hidden}
+a{color:inherit}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+
+/* ---------- INTRO ---------- */
+#intro{position:fixed;inset:0;z-index:100;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:opacity .7s ease, transform .7s ease}
+#intro.gone{opacity:0;transform:scale(1.04);pointer-events:none}
+#flood{position:absolute;inset:0;background:var(--blue);clip-path:circle(0px at var(--fx,50%) var(--fy,50%));transition:clip-path .85s cubic-bezier(.7,0,.2,1)}
+#intro.on #flood{clip-path:circle(150vmax at var(--fx,50%) var(--fy,50%))}
+.intro-stack{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.5vh,26px)}
+.intro-kicker{font-weight:800;font-size:clamp(34px,6.5vmin,64px);letter-spacing:-.02em;color:var(--ink);transition:color .4s .25s}
+#intro.on .intro-kicker{color:#fff}
+.toggle{--W:clamp(200px,34vmin,340px);width:var(--W);height:calc(var(--W)*.535);border-radius:999px;position:relative;background:var(--grey);
+  box-shadow:inset 0 calc(var(--W)*-.03) 0 rgba(0,0,0,.18), 0 calc(var(--W)*.025) 0 var(--ink);border:3px solid var(--ink);transition:background .35s .2s, box-shadow .35s .2s, border-color .35s .2s}
+#intro.on .toggle{background:#fff;border-color:#fff;box-shadow:0 0 0 0 transparent}
+.knob{position:absolute;top:50%;width:calc(var(--W)*.4);height:calc(var(--W)*.4);border-radius:50%;transform:translate(-50%,-50%)}
+.knob.blue{left:51%;background:var(--blue);transform:translate(-50%,-50%) scale(0);transition:transform .45s .35s cubic-bezier(.3,1.6,.5,1)}
+.knob.main{left:27%;background:#fff;border:3px solid var(--ink);box-shadow:inset calc(var(--W)*-.02) calc(var(--W)*-.02) 0 rgba(0,0,0,.12);
+  transition:left .5s cubic-bezier(.6,0,.2,1.25), background .3s .15s, border-color .3s .15s, box-shadow .3s}
+#intro.on .knob.main{left:73%;background:var(--orange);border:calc(var(--W)*.035) solid #fff;box-shadow:none}
+#intro.on .knob.blue{transform:translate(-50%,-50%) scale(1)}
+.intro-word{font-weight:900;font-size:clamp(52px,11vmin,120px);letter-spacing:-.035em;color:#fff;line-height:1;opacity:0;transform:translateY(24px);transition:opacity .5s .65s, transform .6s .65s cubic-bezier(.2,1.4,.4,1)}
+#intro.on .intro-word{opacity:1;transform:none}
+.intro-pill{background:#fff;color:var(--blue);font-weight:800;border-radius:999px;padding:8px 20px;font-size:clamp(14px,2.2vmin,19px);opacity:0;transform:translateY(12px);transition:opacity .4s .95s, transform .4s .95s}
+#intro.on .intro-pill{opacity:1;transform:none}
+.intro-hint{position:absolute;bottom:-46px;left:50%;transform:translateX(-50%);font-weight:700;font-size:14px;color:var(--muted);white-space:nowrap;letter-spacing:.02em;transition:opacity .2s}
+#intro.on .intro-hint{opacity:0}
+#cursor{position:fixed;z-index:101;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);background:rgba(255,255,255,.55);left:0;top:0;pointer-events:none;
+  transform:translate(-50%,-50%);opacity:0;transition:left 1s cubic-bezier(.5,0,.2,1), top 1s cubic-bezier(.5,0,.2,1), opacity .3s, scale .12s}
+#cursor.press{scale:.72}
+.ripple{position:fixed;z-index:101;width:44px;height:44px;border-radius:50%;border:3px solid var(--orange);pointer-events:none;transform:translate(-50%,-50%);animation:rip .6s ease-out forwards}
+@keyframes rip{to{width:150px;height:150px;opacity:0}}
+.toggle-hit{position:absolute;inset:-14px;border-radius:999px;cursor:pointer}
+
+/* ---------- HERO ---------- */
+.hero{background:var(--blue);color:#fff;position:relative;overflow:hidden;
+  background-image:radial-gradient(rgba(255,255,255,.13) 1.4px, transparent 1.6px);background-size:26px 26px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+nav.top{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:24px;letter-spacing:-.03em;text-decoration:none}
+.mini-toggle{width:52px;height:28px;border-radius:99px;background:#fff;position:relative;flex:none}
+.mini-toggle::before,.mini-toggle::after{content:"";position:absolute;top:50%;width:21px;height:21px;border-radius:50%;transform:translate(-50%,-50%)}
+.mini-toggle::before{left:51%;background:var(--blue)}
+.mini-toggle::after{left:73%;background:var(--orange);border:2.5px solid #fff;width:23px;height:23px}
+.mini-toggle.inv{background:var(--blue)}
+.mini-toggle.inv::before{background:#fff}
+.mini-toggle.inv::after{border-color:var(--blue)}
+.nav-tag{font-weight:700;font-size:14px;background:rgba(255,255,255,.16);padding:8px 16px;border-radius:99px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding:30px 0 90px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;background:var(--yellow);color:var(--ink);padding:7px 14px;border-radius:99px;border:2.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}
+h1{font-weight:900;font-size:clamp(52px,7.6vw,104px);line-height:.92;letter-spacing:-.045em;margin:22px 0 24px}
+.stamp{color:var(--orange);-webkit-text-stroke:0;text-shadow:3px 3px 0 #fff,-3px -3px 0 #fff,3px -3px 0 #fff,-3px 3px 0 #fff,0 3px 0 #fff,3px 0 0 #fff,0 -3px 0 #fff,-3px 0 0 #fff,6px 7px 0 var(--ink);display:inline-block;transform:rotate(-2deg)}
+.hero p.lead{font-size:clamp(18px,1.7vw,22px);max-width:560px;color:rgba(255,255,255,.92);font-weight:500}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:17px;padding:15px 24px;border-radius:99px;text-decoration:none;border:3px solid var(--ink);transition:transform .15s, box-shadow .15s}
+.btn.white{background:#fff;color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn.orange{background:var(--orange);color:#fff;box-shadow:4px 4px 0 var(--ink)}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.phone-zone{position:relative;display:flex;justify-content:center}
+.phone{position:relative;width:min(320px,78vw);aspect-ratio:9/16;border-radius:42px;background:var(--ink);padding:10px;box-shadow:10px 12px 0 rgba(21,22,26,.45);transform:rotate(2.5deg)}
+.phone video{width:100%;height:100%;object-fit:cover;border-radius:33px;display:block;background:#000}
+.play{position:absolute;inset:10px;border-radius:33px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(21,22,26,.28);transition:opacity .25s}
+.play span.circle{width:88px;height:88px;border-radius:50%;background:var(--orange);border:4px solid #fff;display:grid;place-items:center;box-shadow:0 6px 0 var(--ink);transition:transform .2s}
+.play:hover span.circle{transform:scale(1.08)}
+.play span.lbl{font-weight:800;background:#fff;color:var(--ink);padding:6px 14px;border-radius:99px;font-size:14px}
+.play.hide{opacity:0;pointer-events:none}
+.sticker{position:absolute;font-weight:900;border:3px solid var(--ink);border-radius:99px;padding:10px 18px;box-shadow:4px 4px 0 var(--ink);white-space:nowrap;z-index:2}
+.sticker.free{background:var(--yellow);color:var(--ink);top:8%;left:-4%;transform:rotate(-8deg);font-size:20px}
+.sticker.live{background:#fff;color:var(--ink);bottom:10%;right:-6%;transform:rotate(6deg);font-size:16px;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(44,194,137,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(44,194,137,0)}100%{box-shadow:0 0 0 0 rgba(44,194,137,0)}}
+.wave{display:block;width:100%;height:60px;margin-bottom:-1px}
+
+/* ---------- TILES ---------- */
+.deck{padding:70px 0 110px}
+.deck-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.deck-head h2{font-weight:900;font-size:clamp(40px,5vw,64px);letter-spacing:-.04em;line-height:1}
+.deck-head p{color:var(--muted);font-weight:600;font-size:18px}
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:22px}
+.tile{grid-column:span 2;position:relative;min-height:330px;border-radius:var(--r);border:3px solid var(--line);box-shadow:7px 7px 0 var(--line);padding:30px;text-align:left;display:flex;flex-direction:column;overflow:hidden;
+  transition:transform .2s cubic-bezier(.3,1.5,.5,1), box-shadow .2s;opacity:0;translate:0 30px}
+.tile.in{opacity:1;translate:0 0;transition:transform .2s cubic-bezier(.3,1.5,.5,1), box-shadow .2s, opacity .6s, translate .7s cubic-bezier(.2,1,.3,1)}
+.tile.big{grid-column:span 3;min-height:360px}
+.tile:hover{transform:translate(-4px,-4px) rotate(-.4deg);box-shadow:11px 11px 0 var(--line)}
+.tile:active{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--line)}
+.tile:focus-visible{outline:4px solid var(--orange);outline-offset:4px}
+.tile .num{font-weight:900;font-size:15px;letter-spacing:.1em;padding:6px 12px;border-radius:99px;border:2.5px solid currentColor;align-self:flex-start}
+.tile h3{font-weight:900;font-size:clamp(30px,3.1vw,42px);line-height:.98;letter-spacing:-.035em;margin-top:auto;max-width:85%;position:relative;z-index:1}
+.tile p{font-weight:600;margin-top:12px;font-size:16.5px;max-width:78%;position:relative;z-index:1;opacity:.9}
+.tile .arrow{position:absolute;right:24px;bottom:24px;width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid var(--line);display:grid;place-items:center;transition:transform .25s;z-index:2}
+.tile:hover .arrow{transform:rotate(-45deg) scale(1.08)}
+.tile .art{position:absolute;right:18px;top:18px;width:150px;height:150px;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.tile:hover .art{transform:translateY(-6px) rotate(-6deg)}
+.t-orange{background:var(--orange);color:#fff}
+.t-blue{background:var(--blue);color:#fff}
+.t-yellow{background:var(--yellow);color:var(--ink)}
+.t-green{background:var(--green);color:var(--ink)}
+.t-white{background:#fff;color:var(--ink)}
+
+/* ---------- PANEL ---------- */
+#panel{position:fixed;inset:0;z-index:50;pointer-events:none}
+#panel .scrim{position:absolute;inset:0;background:rgba(21,22,26,.55);opacity:0;transition:opacity .3s}
+#panel .sheet{position:absolute;inset:3vh max(3vw,calc(50vw - 520px)) 0;background:var(--paper);border:3px solid var(--line);border-bottom:0;border-radius:32px 32px 0 0;overflow:auto;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,1,.25,1);overscroll-behavior:contain}
+#panel.open{pointer-events:auto}
+#panel.open .scrim{opacity:1}
+#panel.open .sheet{transform:none}
+.sheet-head{position:relative;padding:44px 52px 40px;border-bottom:3px solid var(--line)}
+.sheet-head .num{font-weight:900;font-size:14px;letter-spacing:.12em;padding:6px 12px;border-radius:99px;border:2.5px solid currentColor;display:inline-block}
+.sheet-head h2{font-weight:900;font-size:clamp(38px,5.4vw,70px);letter-spacing:-.045em;line-height:.95;margin-top:18px;max-width:780px}
+.sheet-head .sub{font-weight:600;font-size:19px;margin-top:14px;max-width:640px;opacity:.92}
+.close{position:sticky;top:16px;float:right;margin:16px 16px -70px 0;width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);display:grid;place-items:center;z-index:5}
+.close:hover{transform:rotate(90deg);transition:transform .25s}
+.sheet-body{padding:44px 52px 30px;display:flex;flex-direction:column;gap:34px}
+.sheet-body h4{font-weight:900;font-size:24px;letter-spacing:-.02em;margin-bottom:14px}
+.sheet-body p{font-size:18px;color:#2b2d35;max-width:760px}
+.sheet-body p + p{margin-top:12px}
+.big-quote{font-weight:800;font-size:clamp(24px,2.8vw,32px);line-height:1.2;letter-spacing:-.02em;border-left:8px solid var(--orange);padding:4px 0 4px 22px;max-width:820px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-weight:700;font-size:15.5px;background:#fff;border:2.5px solid var(--line);border-radius:99px;padding:8px 15px;display:inline-flex;align-items:center;gap:8px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border:2.5px solid var(--line);border-radius:22px;padding:22px;box-shadow:4px 4px 0 var(--line)}
+.card .k{font-weight:900;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.card h5{font-weight:900;font-size:20px;letter-spacing:-.02em;margin:6px 0 6px;line-height:1.15}
+.card p,.card li{font-size:16px;color:#3a3c45}
+.card ul{padding-left:18px;margin-top:6px}
+.card.c-blue{background:var(--blue);color:#fff}.card.c-blue p,.card.c-blue .k{color:rgba(255,255,255,.85)}
+.card.c-orange{background:var(--orange);color:#fff}.card.c-orange p,.card.c-orange .k{color:rgba(255,255,255,.9)}
+.card.c-yellow{background:var(--yellow)}
+.card.c-green{background:var(--green)}
+.step-n{width:42px;height:42px;border-radius:50%;background:var(--orange);color:#fff;border:2.5px solid var(--line);display:grid;place-items:center;font-weight:900;font-size:19px;margin-bottom:10px}
+.compare{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+.compare .vs{align-self:center;font-weight:900;font-size:22px}
+.timeline{display:flex;flex-direction:column;gap:0;border-left:4px solid var(--line);margin-left:12px}
+.tl{position:relative;padding:0 0 26px 30px}
+.tl::before{content:"";position:absolute;left:-14px;top:2px;width:24px;height:24px;border-radius:50%;background:#fff;border:4px solid var(--line)}
+.tl.now::before{background:var(--orange)}
+.tl .when{font-weight:900;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tl h5{font-weight:900;font-size:21px;letter-spacing:-.02em;margin:2px 0 4px}
+.tl p{font-size:16.5px}
+.status-list{display:flex;flex-direction:column;gap:10px}
+.srow{display:flex;gap:14px;align-items:flex-start;background:#fff;border:2.5px solid var(--line);border-radius:18px;padding:14px 18px}
+.srow .ic{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:16px;border:2.5px solid var(--line)}
+.ic.ok{background:var(--green)}.ic.wip{background:var(--yellow)}.ic.todo{background:#fff}
+.srow b{display:block;font-size:17px}
+.srow span{color:var(--muted);font-size:15.5px}
+.callout{background:var(--ink);color:#fff;border-radius:24px;padding:28px 30px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.callout h5{font-weight:900;font-size:24px;letter-spacing:-.02em}
+.callout p{color:rgba(255,255,255,.78);font-size:16.5px}
+.mail{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.copy{font-weight:800;font-size:14px;background:#fff;color:var(--ink);border-radius:99px;padding:8px 14px;border:2.5px solid #fff}
+.sheet-foot{display:flex;justify-content:space-between;gap:12px;padding:26px 52px 60px;border-top:3px dashed rgba(21,22,26,.2);margin-top:10px}
+.navbtn{display:flex;flex-direction:column;gap:2px;text-align:left;background:#fff;border:2.5px solid var(--line);border-radius:18px;padding:14px 18px;box-shadow:3px 3px 0 var(--line);min-width:0;max-width:48%}
+.navbtn.next{text-align:right;margin-left:auto}
+.navbtn small{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.navbtn b{font-weight:900;font-size:18px;letter-spacing:-.02em}
+.navbtn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--line)}
+.shot{border-radius:22px;border:2.5px solid var(--line);overflow:hidden;background:var(--blue);display:flex;gap:18px;align-items:center;padding:22px;color:#fff;box-shadow:4px 4px 0 var(--line)}
+.shot .url{font-weight:900;font-size:clamp(22px,3vw,32px);letter-spacing:-.03em}
+
+footer{border-top:3px solid var(--line);padding:34px 0 50px}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-weight:700;color:var(--muted)}
+footer .brand{color:var(--ink);font-size:20px}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:56px;padding-bottom:70px}
+  .tiles{grid-template-columns:1fr}
+  .tile,.tile.big{grid-column:auto;min-height:280px}
+  .g3,.g4{grid-template-columns:repeat(2,1fr)}
+  .sheet-head,.sheet-body{padding-left:26px;padding-right:26px}
+  .sheet-foot{padding-left:26px;padding-right:26px}
+  #panel .sheet{inset:2vh 0 0}
+  .compare{grid-template-columns:1fr}
+  .compare .vs{justify-self:center}
+}
+@media (max-width:560px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .tile .art{width:110px;height:110px}
+  .sticker.free{left:0}.sticker.live{right:0}
+  .nav-tag{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
+</style>
+</head>
+<body class="locked">
+
+<!-- INTRO -->
+<div id="intro" aria-label="Intro-Animation">
+  <div id="flood"></div>
+  <div class="intro-stack">
+    <div class="intro-kicker">switch to</div>
+    <div class="toggle" id="toggle">
+      <span class="knob blue"></span>
+      <span class="knob main"></span>
+      <button class="toggle-hit" id="toggleHit" aria-label="Auf squadmode umschalten"></button>
+      <div class="intro-hint">klick den Schalter</div>
+    </div>
+    <div class="intro-word">squadmode</div>
+    <div class="intro-pill">Pitch Deck · Tobias Wagner</div>
+  </div>
+</div>
+<div id="cursor"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <nav class="top">
+      <a class="brand" href="#top"><span class="mini-toggle"></span>squadmode</a>
+      <span class="nav-tag">Pitch Deck · 2026</span>
+    </nav>
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">⚡ Pitch Deck</span>
+        <h1>Finde deine <span class="stamp">Squad.</span></h1>
+        <p class="lead">Online wird Trainieren, Grinden und Gründen gefeiert – aber fast alle machen es allein in ihrem Zimmer. <b>squadmode</b> bringt Menschen mit demselben Ziel zusammen und macht aus Vorsätzen gemeinsame Projekte.</p>
+        <div class="cta-row">
+          <a class="btn white" href="#deck">Zum Pitch ↓</a>
+          <a class="btn orange" href="https://www.squadmode.app" target="_blank" rel="noopener">squadmode.app ↗</a>
+        </div>
+      </div>
+      <div class="phone-zone">
+        <div class="sticker free">100% gratis</div>
+        <div class="phone">
+          <video id="promo" src="promo.mp4" poster="poster.jpg" playsinline preload="metadata"></video>
+          <button class="play" id="playBtn" aria-label="Video abspielen">
+            <span class="circle"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="#fff"/></svg></span>
+            <span class="lbl">Promo ansehen · 37 s</span>
+          </button>
+        </div>
+        <div class="sticker live"><span class="dot"></span>Prototyp ist live</div>
+      </div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 30 C 240 70, 480 -10, 720 30 S 1200 70, 1440 25 V60 H0Z" fill="#f9faf7"/></svg>
+</header>
+
+<!-- TILES -->
+<main class="deck" id="deck">
+  <div class="wrap">
+    <div class="deck-head">
+      <h2>Der Pitch.</h2>
+      <p>5 Kacheln – klick dich durch.</p>
+    </div>
+    <div class="tiles" id="tiles"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><span class="mini-toggle inv"></span>squadmode</span>
+    <span>Pitch Deck von Tobias Wagner · www.squadmode.app</span>
+  </div>
+</footer>
+
+<!-- PANEL -->
+<div id="panel" aria-hidden="true">
+  <div class="scrim" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <button class="close" data-close aria-label="Schließen"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#15161a" stroke-width="3.2" stroke-linecap="round"/></svg></button>
+    <div id="sheetContent"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Figuren (wie im Video) ---------- */
+function buddy(color, x, y, s, mood){
+  const m = mood==='sad' ? '<path d="M-7 15 q7 -5 14 0" stroke="#15161a" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
+                         : '<path d="M-8 11 q8 7 16 0" stroke="#15161a" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+    <rect x="-20" y="22" width="40" height="46" rx="20" fill="${color}" stroke="#15161a" stroke-width="3"/>
+    <circle cx="0" cy="0" r="20" fill="${color}" stroke="#15161a" stroke-width="3"/>
+    <circle cx="-7" cy="-3" r="5.2" fill="#fff" stroke="#15161a" stroke-width="2"/><circle cx="7" cy="-3" r="5.2" fill="#fff" stroke="#15161a" stroke-width="2"/>
+    <circle cx="-6" cy="-2" r="2.2" fill="#15161a"/><circle cx="8" cy="-2" r="2.2" fill="#15161a"/>${m}</g>`;
+}
+const ART = {
+  me: `<svg class="art" viewBox="0 0 150 150">${buddy('#fec83b',75,52,1.25)}<text x="118" y="34" font-size="26">👋</text></svg>`,
+  idea: `<svg class="art" viewBox="0 0 150 150"><path d="M75 70 L30 40 M75 70 L120 42 M75 70 L75 22" stroke="#15161a" stroke-width="3"/>${buddy('#fe6b34',75,76,.9)}${buddy('#2cc289',75,22,.55)}${buddy('#fec83b',122,44,.55)}${buddy('#fff',28,42,.55)}</svg>`,
+  status: `<svg class="art" viewBox="0 0 150 150"><rect x="22" y="30" width="106" height="92" rx="14" fill="#fff" stroke="#15161a" stroke-width="3"/><rect x="22" y="30" width="106" height="24" rx="12" fill="#fe6b34" stroke="#15161a" stroke-width="3"/><text x="75" y="48" text-anchor="middle" font-family="Figtree" font-weight="900" font-size="14" fill="#fff">NOV 2026</text><path d="M46 88 l14 14 l28 -30" stroke="#2cc289" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  money: `<svg class="art" viewBox="0 0 150 150"><path d="M20 120 L58 84 L82 100 L128 40" stroke="#15161a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M106 38 h24 v24" stroke="#15161a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="40" r="22" fill="#fec83b" stroke="#15161a" stroke-width="3"/><text x="48" y="48" text-anchor="middle" font-family="Figtree" font-weight="900" font-size="22" fill="#15161a">€</text></svg>`,
+  you: `<svg class="art" viewBox="0 0 150 150">${buddy('#3a5aff',48,52,.95)}${buddy('#fe6b34',104,52,.95,'')}<text x="66" y="24" font-size="22">🤝</text></svg>`
+};
+const ARROW = '<svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" stroke="#15161a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ---------- Inhalte ---------- */
+const SLIDES = [
+{
+  id:'ueber-mich', n:'01', cls:'t-orange', big:true, art:'me',
+  title:'Über mich', teaser:'Wer hinter squadmode steckt – und warum.',
+  sub:'Ich bin Tobias, komme aus Regau in Oberösterreich und baue squadmode.',
+  body:`
+  <div class="chips">
+    <span class="chip">🎓 Matura 2026</span><span class="chip">🌍 Gap Year</span><span class="chip">🇨🇭 ab Herbst 2027: ETH Zürich, Rechnergestützte Wissenschaften</span><span class="chip">📍 Regau, OÖ</span>
+  </div>
+  <div>
+    <h4>Kurz zu mir</h4>
+    <p>Ich habe gerade maturiert und nutze mein Gap Year, um Dinge wirklich zu bauen statt nur darüber nachzudenken. Ab Herbst 2027 studiere ich Computational Science and Engineering an der ETH Zürich.</p>
+    <p>squadmode habe ich von der Idee bis zur Live-Website selbst umgesetzt: Konzept, Design, Code, Branding und das Promo-Video.</p>
+  </div>
+  <div class="grid g3">
+    <div class="card c-yellow"><div class="k">Stärke</div><h5>Menschen zusammenbringen</h5><p>Als Klassensprecher und in Schulprojekten habe ich gemerkt: Am meisten bringe ich weiter, wenn ich eine Gruppe organisiere und leite.</p></div>
+    <div class="card"><div class="k">Stärke</div><h5>Reden & Pitchen</h5><p>Referate, Vorträge, Reden – vor Leuten zu stehen und zu überzeugen, liegt mir.</p></div>
+    <div class="card c-blue"><div class="k">Antrieb</div><h5>Ergebnisse erzielen</h5><p>Mich motiviert, wenn am Ende etwas Greifbares steht. In 10 Jahren will ich ein eigenes Unternehmen aufgebaut haben.</p></div>
+  </div>
+  <div class="big-quote">Ich baue squadmode, weil ich selbst am meisten erreiche, wenn ich nicht allein bin.</div>`
+},
+{
+  id:'idee', n:'02', cls:'t-blue', big:true, art:'idea',
+  title:'Die Grundidee + Prototyp', teaser:'Vom „allein im Zimmer“ zur Squad – und so sieht’s aus.',
+  sub:'Ein Ort, an dem aus einem Ziel ein gemeinsames Projekt wird.',
+  body:`
+  <div class="compare">
+    <div class="card"><div class="k">Das Problem</div><h5>Ambitioniert – aber allein.</h5><p>Social Media feiert Hustle, Sport und Gründen. In der Realität sitzt man an Tag 7 motiviert allein am Schreibtisch – und an Tag 213 immer noch. Allein hält kaum jemand durch.</p></div>
+    <div class="vs">→</div>
+    <div class="card c-orange"><div class="k">Die Lösung</div><h5>Switch to squadmode.</h5><p>Du nennst dein konkretes Ziel, und squadmode verbindet dich mit Leuten, die dasselbe wollen – in deiner Stadt oder weltweit. Aus Vorsätzen werden Teams.</p></div>
+  </div>
+  <div>
+    <h4>So funktioniert’s – in 4 Schritten</h4>
+    <div class="grid g4">
+      <div class="card"><div class="step-n">1</div><h5>Ziel benennen</h5><p>Konkret statt vage: „Sub-50 auf 10 km bis März“ statt „mehr laufen“.</p></div>
+      <div class="card"><div class="step-n">2</div><h5>Kategorie wählen</h5><p>Business & Startups, Sport & Fitness, Tech & Coding, Lernen, Kreatives, Social Impact …</p></div>
+      <div class="card"><div class="step-n">3</div><h5>Lokal oder global?</h5><p>Weltweit online, ein Land oder eine Stadt. Offen für alle oder mit Beitrittsanfrage.</p></div>
+      <div class="card"><div class="step-n">4</div><h5>Launchen 🚀</h5><p>Projekt geht live, Leute finden es über „Explore“ und steigen ein.</p></div>
+    </div>
+  </div>
+  <div>
+    <h4>Echte Beispiele aus dem Prototyp</h4>
+    <div class="grid g2">
+      <div class="card c-yellow"><div class="k">🏃 Sports & Fitness · Wien</div><h5>Sub-50 10k bis März</h5><p>3 Läufe pro Woche entlang der Donau. Anfänger willkommen – wir pushen uns gegenseitig.</p></div>
+      <div class="card c-green"><div class="k">💻 Tech & Coding · weltweit</div><h5>Unsere erste KI-App – 2 Calls pro Woche</h5><p>Gesucht: 2 Leute, die bis Sommer eine echte App launchen wollen.</p></div>
+    </div>
+  </div>
+  <div>
+    <h4>Was der Prototyp schon kann</h4>
+    <div class="chips">
+      <span class="chip">👤 Accounts & Login</span><span class="chip">🔑 Passwort zurücksetzen</span><span class="chip">➕ Projekte erstellen</span><span class="chip">🔎 Explore-Feed</span><span class="chip">✋ Beitrittsanfragen</span><span class="chip">💬 Team-Chat</span><span class="chip">✉️ Direktnachrichten</span><span class="chip">✅ Aufgaben verteilen</span><span class="chip">📅 Events planen</span><span class="chip">📎 Dateien teilen</span><span class="chip">🔔 Benachrichtigungen & Mails</span>
+    </div>
+  </div>
+  <a class="shot" href="https://www.squadmode.app" target="_blank" rel="noopener" style="text-decoration:none">
+    <span class="mini-toggle" style="width:70px;height:38px"></span>
+    <div><div style="font-weight:700;opacity:.85">Selbst ausprobieren</div><div class="url">www.squadmode.app ↗</div></div>
+  </a>`
+},
+{
+  id:'status', n:'03', cls:'t-yellow', art:'status',
+  title:'Status Quo', teaser:'Wo squadmode heute steht.',
+  sub:'Stand November 2026: Der Prototyp ist live – jetzt geht es um die ersten echten Nutzer.',
+  body:`
+  <div class="status-list">
+    <div class="srow"><span class="ic ok">✓</span><div><b>Website ist live</b><span>Unter eigener Domain www.squadmode.app – mit Accounts, Datenbank und Login.</span></div></div>
+    <div class="srow"><span class="ic ok">✓</span><div><b>Kernfunktionen gebaut</b><span>Projekte erstellen & finden, Beitrittsanfragen, Workspace mit Chat, Aufgaben, Events, Dateien, DMs und Benachrichtigungen.</span></div></div>
+    <div class="srow"><span class="ic ok">✓</span><div><b>Marke steht</b><span>Name squadmode, Logo (der Schalter), Promo-Video, eigene Kontakt-Mail.</span></div></div>
+    <div class="srow"><span class="ic ok">✓</span><div><b>Social-Media-Kanäle angelegt</b><span>Instagram und TikTok für squadmode sind eingerichtet.</span></div></div>
+    <div class="srow"><span class="ic wip">…</span><div><b>Testphase</b><span>Alle Abläufe werden gerade durchgetestet, damit die ersten Squads reibungslos starten.</span></div></div>
+    <div class="srow"><span class="ic todo">○</span><div><b>Erste Nutzer & Community</b><span>Der nächste große Schritt – und genau hier kommt ihr ins Spiel.</span></div></div>
+  </div>
+  <div class="grid g3">
+    <div class="card c-blue"><div class="k">Preis</div><h5>100% gratis</h5><p>Für Nutzer kostenlos – ohne Hürde zum Mitmachen.</p></div>
+    <div class="card"><div class="k">Tech</div><h5>Schlank & skalierbar</h5><p>Gehostet auf Vercel, Daten & Login über Supabase. Kaum Fixkosten.</p></div>
+    <div class="card c-orange"><div class="k">Phase</div><h5>Pre-Launch</h5><p>Noch kein Umsatz, noch kein Gewerbe – bewusst: erst Nutzen beweisen, dann Geld verdienen.</p></div>
+  </div>`
+},
+{
+  id:'monetarisierung', n:'04', cls:'t-green', art:'money',
+  title:'Monetarisierung & Long Term', teaser:'Wie squadmode langfristig Geld verdient.',
+  sub:'Für Nutzer bleibt squadmode kostenlos. Geld kommt von denen, die genau diese motivierten Gruppen erreichen wollen.',
+  body:`
+  <div class="grid g2">
+    <div class="card c-orange"><div class="k">Einnahme 1</div><h5>Kooperationen mit Firmen</h5><p>Marken starten oder sponsern Projekte, die zu ihnen passen – und erreichen Leute genau in dem Moment, in dem sie aktiv an einem Ziel arbeiten.</p>
+      <ul><li>Eine Laufschuhmarke sponsert alle „Sub-50 10k“-Squads einer Stadt</li><li>Eine Tech-Firma startet eine Build-Challenge für Coding-Squads</li><li>Ein Fitnessstudio stellt Trainingsgruppen Räume zur Verfügung</li></ul></div>
+    <div class="card c-blue"><div class="k">Einnahme 2</div><h5>Werbung – passend statt nervig</h5><p>Weil jedes Projekt eine Kategorie und einen Ort hat, lässt sich Werbung sehr gezielt ausspielen: native Platzierungen im Explore-Feed, passend zum Ziel der Squad.</p>
+      <ul><li>Lauf-Squads sehen Laufevents in ihrer Stadt</li><li>Startup-Squads sehen Tools und Förderprogramme</li></ul></div>
+  </div>
+  <div>
+    <h4>Long-Term-Konzept</h4>
+    <div class="timeline">
+      <div class="tl now"><div class="when">Jetzt</div><h5>Website & erste Squads</h5><p>Prototyp live, erste Nutzer gewinnen, Feedback einsammeln, Produkt schärfen.</p></div>
+      <div class="tl"><div class="when">Phase 2</div><h5>Community aufbauen</h5><p>Wachstum über Instagram & TikTok und Mundpropaganda – mit Fokus auf die Zielgruppe 16–20 Jahre.</p></div>
+      <div class="tl"><div class="when">Phase 3</div><h5>App & weltweit</h5><p>Eigene App für iOS und Android, Projekte in vielen Städten und Ländern.</p></div>
+      <div class="tl"><div class="when">Phase 4</div><h5>Partner-Plattform</h5><p>Firmen, Vereine und Organisationen stellen selbst Projekte ein – squadmode wird der Ort, an dem gemeinsame Ziele starten.</p></div>
+    </div>
+  </div>
+  <div class="big-quote">Vision: Niemand, der etwas Großes vorhat, muss es mehr allein machen.</div>`
+},
+{
+  id:'mitmachen', n:'05', cls:'t-white', art:'you',
+  title:'Wofür ich euch brauche', teaser:'Wie ihr squadmode konkret helfen könnt.',
+  sub:'Eine Plattform für Squads lebt von Leuten. Hier könnt ihr den Unterschied machen.',
+  body:`
+  <div class="grid g2">
+    <div class="card c-yellow"><div class="step-n">1</div><h5>Mitmachen & testen</h5><p>Account anlegen, ein eigenes Projekt starten oder einem beitreten. Die ersten Squads sind die wichtigsten.</p></div>
+    <div class="card"><div class="step-n">2</div><h5>Ehrliches Feedback</h5><p>Was ist unklar, was fehlt, was nervt? Lieber jetzt hart als später nie.</p></div>
+    <div class="card"><div class="step-n">3</div><h5>Weitersagen</h5><p>Ihr kennt jemanden, der gerade allein trainiert, lernt oder gründet? Schickt ihm squadmode.</p></div>
+    <div class="card c-blue"><div class="step-n">4</div><h5>Mitstreiter & Kontakte</h5><p>Ich suche einen technischen Co-Founder (Software/ML) und Leute, die Lust auf Content & Community haben – oder Kontakte zu Firmen für erste Kooperationen.</p></div>
+  </div>
+  <div class="callout">
+    <div><h5>Lust, Teil der Squad zu werden?</h5><p>Schreibt mir einfach – ich freu mich über jede Nachricht.</p></div>
+    <div class="mail">
+      <a class="btn orange" href="mailto:squadmode.team@gmail.com">squadmode.team@gmail.com</a>
+      <button class="copy" id="copyMail">Kopieren</button>
+    </div>
+  </div>
+  <a class="shot" href="https://www.squadmode.app" target="_blank" rel="noopener" style="text-decoration:none;background:var(--orange)">
+    <span class="mini-toggle" style="width:70px;height:38px"></span>
+    <div><div style="font-weight:700;opacity:.9">Switch to squadmode</div><div class="url">www.squadmode.app ↗</div></div>
+  </a>`
+}
+];
+
+/* ---------- Tiles rendern ---------- */
+const tilesEl = document.getElementById('tiles');
+SLIDES.forEach((s,i)=>{
+  const b = document.createElement('button');
+  b.className = `tile ${s.cls}${s.big?' big':''}`;
+  b.innerHTML = `<span class="num">${s.n}</span>${ART[s.art]}<h3>${s.title}</h3><p>${s.teaser}</p><span class="arrow">${ARROW}</span>`;
+  b.addEventListener('click',()=>{ location.hash = s.id; });
+  tilesEl.appendChild(b);
+});
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ const idx=[...tilesEl.children].indexOf(e.target); setTimeout(()=>e.target.classList.add('in'), idx*90); io.unobserve(e.target);} }),{threshold:.15});
+[...tilesEl.children].forEach(t=>io.observe(t));
+
+/* ---------- Panel ---------- */
+const panel = document.getElementById('panel'), content = document.getElementById('sheetContent'), sheet = panel.querySelector('.sheet');
+let lastFocus=null;
+function openSlide(id){
+  const i = SLIDES.findIndex(s=>s.id===id); if(i<0){ closePanel(true); return; }
+  const s = SLIDES[i], prev = SLIDES[i-1], next = SLIDES[i+1];
+  content.innerHTML = `
+    <div class="sheet-head ${s.cls}"><span class="num">${s.n} / 05</span><h2 id="sheetTitle">${s.title}</h2><p class="sub">${s.sub}</p></div>
+    <div class="sheet-body">${s.body}</div>
+    <div class="sheet-foot">
+      ${prev?`<button class="navbtn" data-go="${prev.id}"><small>← Zurück</small><b>${prev.title}</b></button>`:''}
+      ${next?`<button class="navbtn next" data-go="${next.id}"><small>Weiter →</small><b>${next.title}</b></button>`
+            :`<button class="navbtn next" data-close><small>Fertig</small><b>Zur Übersicht</b></button>`}
+    </div>`;
+  if(!panel.classList.contains('open')) lastFocus=document.activeElement;
+  panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  sheet.scrollTop=0; setTimeout(()=>sheet.querySelector('.close').focus({preventScroll:true}),60);
+  const cm = document.getElementById('copyMail');
+  if(cm) cm.addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText('squadmode.team@gmail.com'); cm.textContent='Kopiert ✓'; }catch(e){ cm.textContent='squadmode.team@gmail.com'; } });
+}
+function closePanel(fromHash){
+  panel.classList.remove('open'); panel.setAttribute('aria-hidden','true');
+  if(!document.body.classList.contains('locked')) document.body.style.overflow='';
+  if(!fromHash && location.hash) history.replaceState(null,'',location.pathname+location.search);
+  if(lastFocus) lastFocus.focus({preventScroll:true});
+}
+panel.addEventListener('click',e=>{
+  const go = e.target.closest('[data-go]'); if(go){ location.hash = go.dataset.go; return; }
+  if(e.target.closest('[data-close]')) closePanel();
+});
+document.addEventListener('keydown',e=>{
+  if(!panel.classList.contains('open')) return;
+  const i = SLIDES.findIndex(s=>s.id===location.hash.slice(1));
+  if(e.key==='Escape') closePanel();
+  if(e.key==='ArrowRight' && SLIDES[i+1]) location.hash=SLIDES[i+1].id;
+  if(e.key==='ArrowLeft' && SLIDES[i-1]) location.hash=SLIDES[i-1].id;
+});
+function route(){ const h=location.hash.slice(1); if(SLIDES.some(s=>s.id===h)) openSlide(h); else if(panel.classList.contains('open')) closePanel(true); }
+window.addEventListener('hashchange',route);
+
+/* ---------- Video ---------- */
+const vid=document.getElementById('promo'), playBtn=document.getElementById('playBtn');
+playBtn.addEventListener('click',()=>{ vid.controls=true; vid.play().catch(()=>{}); playBtn.classList.add('hide'); });
+vid.addEventListener('ended',()=>{ vid.controls=false; vid.currentTime=0; vid.load(); playBtn.classList.remove('hide'); });
+
+/* ---------- Intro: switch to squadmode ---------- */
+const intro=document.getElementById('intro'), toggle=document.getElementById('toggle'), cursor=document.getElementById('cursor');
+let switched=false;
+function knobPos(){ const r=toggle.getBoundingClientRect(); return {x:r.left+r.width*.27, y:r.top+r.height/2}; }
+function doSwitch(){
+  if(switched) return; switched=true;
+  const p=knobPos();
+  intro.style.setProperty('--fx',p.x+'px'); intro.style.setProperty('--fy',p.y+'px');
+  const rp=document.createElement('div'); rp.className='ripple'; rp.style.left=p.x+'px'; rp.style.top=p.y+'px'; document.body.appendChild(rp); setTimeout(()=>rp.remove(),700);
+  intro.classList.add('on');
+  setTimeout(()=>{ cursor.style.opacity=0; },350);
+  setTimeout(()=>{
+    intro.classList.add('gone'); document.body.classList.remove('locked');
+    if(!panel.classList.contains('open')) document.body.style.overflow='';
+    setTimeout(()=>{ intro.remove(); cursor.remove(); route(); },750);
+  },2100);
+}
+document.getElementById('toggleHit').addEventListener('click',doSwitch);
+// Auto-Klick mit animiertem Cursor
+window.addEventListener('load',()=>{
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  cursor.style.transition='none'; cursor.style.left=(innerWidth*.78)+'px'; cursor.style.top=(innerHeight*.86)+'px';
+  setTimeout(()=>{
+    if(switched) return;
+    cursor.style.transition=''; cursor.style.opacity=1;
+    requestAnimationFrame(()=>{ const p=knobPos(); cursor.style.left=p.x+'px'; cursor.style.top=p.y+'px'; });
+    setTimeout(()=>{ if(switched) return; cursor.classList.add('press'); setTimeout(()=>{ cursor.classList.remove('press'); doSwitch(); },140); }, reduce?50:1150);
+  }, reduce?100:700);
+});
+</script>
+</body>
+</html>
