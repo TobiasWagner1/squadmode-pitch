@@ -438,6 +438,10 @@ SLIDES.forEach((s,i)=>{
 });
 const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ const idx=[...tilesEl.children].indexOf(e.target); setTimeout(()=>e.target.classList.add('in'), idx*90); io.unobserve(e.target);} }),{threshold:.15});
 [...tilesEl.children].forEach(t=>io.observe(t));
+// Sicherheitsnetz: Kacheln nie unsichtbar lassen, falls der Browser den Observer verzögert
+function revealAll(){ [...tilesEl.children].forEach(t=>t.classList.add('in')); }
+window.addEventListener('scroll',function once(){ if(scrollY>200){ setTimeout(revealAll,900); removeEventListener('scroll',once); } },{passive:true});
+setTimeout(revealAll,6000);
 
 /* ---------- Panel ---------- */
 const panel = document.getElementById('panel'), content = document.getElementById('sheetContent'), sheet = panel.querySelector('.sheet');
